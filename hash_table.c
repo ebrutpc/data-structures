@@ -2,7 +2,7 @@
  * File:   main.c
  * Author: BM
  *
- * Created on 26 Kas�m 2014 �ar�amba, 12:59
+ * Created on 26 Kasım 2014 Çarşamba, 12:59
  */
 
 #include <stdio.h>
@@ -79,7 +79,7 @@ void listeyi_hash_tablosuna_donusturme(struct hash_tablosu *htable, struct CELL 
 {
 
 
-    if(*liste_basi==NULL) printf("Liste bos hasha d�n�st�r�lemez...");
+    if(*liste_basi==NULL) printf("Liste bos hasha dönüstürülemez...");
 
 
     struct CELL *eklenecek ;
@@ -288,7 +288,51 @@ void sil(struct hash_tablosu *htable, char *anahtar)
     }
 }
 
-//int aynimi(struct hash_tablosu *h1, struct hash_tablosu *h2){
+int aynimi(struct hash_tablosu *h1, struct hash_tablosu *h2){
+//iki hash table verilerinin karşılaştırmasını  yapar tablo boyutları farklı olabilir
+
+if(h1==NULL || h2==NULL) return 1;
+if(h1!=NULL && h2!=NULL) {
+
+    int h1_eleman=0;
+    int h2_eleman=0;
+    int eslesen_eleman=0;
+
+    int j,k,l,i;
+    for (i=0;i<h1->tablo_uzunlugu;i++){
+        h1_eleman +=h1->tablo_basi[i].counter;
+    }
+    for(i=0;i<h2->tablo_uzunlugu;i++){
+        h2_eleman+=h2->tablo_basi[i].counter;
+
+    }
+    if(h1_eleman!= h2_eleman) return 0;
+
+    for(i=0;i<h1->tablo_uzunlugu;i++){
+        if(h1->tablo_basi[i].counter>0){
+            struct CELL *x=h1->tablo_basi[i].header;
+            while(x!=NULL){
+                for(j=0;j<h2->tablo_uzunlugu;j++){
+                    if(h2->tablo_basi[j].counter>0){
+                        struct CELL *y=h2->tablo_basi[j].header;
+                        while(y!=NULL){
+                            if(!strcmp(x->anahtar,y->anahtar)){
+                                eslesen_eleman++;
+                            }
+                            y=y->next;
+                        }
+                    }
+                }
+                x=x->next;
+            }
+        }
+    }
+    if(eslesen_eleman==h1_eleman) return 1;
+    else return 0;
+
+}
+else return 0;
+}
 
 struct CELL* hucre_olustur(char *icerik)
 {
@@ -321,11 +365,15 @@ void liste_basina_ekle(char *icerik,struct CELL **liste_basi)
 
 int main(int argc, char** argv)
 {
+  
     struct hash_tablosu *htable=NULL;
     struct CELL *liste=NULL;
-
+    struct hash_tablosu *htable2=NULL;
+    struct CELL *liste2=NULL;
+    int ayni;
 
     initialize_hash_table(&htable,3,5);
+    initialize_hash_table(&htable2,3,6);
     liste_basina_ekle("gundogdu",&liste);
     liste_basina_ekle("baklava",&liste);
 
@@ -341,21 +389,37 @@ int main(int argc, char** argv)
     liste_basina_ekle("besiktas",&liste);
     liste_basina_ekle("aaaaaa",&liste);
     liste_basina_ekle("bbbbb",&liste);
+
     // liste_yaz(liste);
     // print_list(liste);
-    listeyi_hash_tablosuna_donusturme(htable,&liste);
-    print_hash_table(htable);
-//    printf("%4s",liste->anahtar);
-//     insert_hash_table(htable,"bbbbb");
-//     insert_hash_table(htable,"aaaaaa");
-//     insert_hash_table(htable,"Trabzonspor");
-//     insert_hash_table(htable,"kadayif");
-//     insert_hash_table(htable,"gundogdu");
-//     insert_hash_table(htable,"besiktas");
-//     insert_hash_table(htable,"baklava");
-//     insert_hash_table(htable,"dembaba");
-//     insert_hash_table(htable,"cardoza");
-//      print_hash_table(htable);
+   //listeyi_hash_tablosuna_donusturme(htable,&liste);
+   // print_hash_table(htable);
+   // printf("%4s",liste->anahtar);
+     insert_hash_table(htable,"bbbbb");
+     insert_hash_table(htable,"aaaaaa");
+     insert_hash_table(htable,"Trabzonspor");
+     insert_hash_table(htable,"kadayif");
+     insert_hash_table(htable,"gundogdu");
+     insert_hash_table(htable,"besiktas");
+     insert_hash_table(htable,"baklava");
+     insert_hash_table(htable,"dembaba");
+     insert_hash_table(htable,"cardoza");
+     // print_hash_table(htable);
+
+     insert_hash_table(htable2,"bbbbb");
+     insert_hash_table(htable2,"aaaaaa");
+     insert_hash_table(htable2,"Trabzonspor");
+     insert_hash_table(htable2,"kadayif");
+     insert_hash_table(htable2,"gundogdu");
+     insert_hash_table(htable2,"besiktas");
+     insert_hash_table(htable2,"baklava");
+     insert_hash_table(htable2,"dembaba");
+     insert_hash_table(htable2,"cardoza");
+     insert_hash_table(htable2,"cardozasc");
+     insert_hash_table(htable2,"cardozaaaa");
+      //print_hash_table(htable2);
+      ayni=aynimi(htable,htable2);
+      printf("ayni =%d",ayni);
 //
 //     hash_table_buyut(&htable,17,19);
 //     print_hash_table(htable);
